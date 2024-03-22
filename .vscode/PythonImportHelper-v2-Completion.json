@@ -1,0 +1,83 @@
+[
+    {
+        "label": "speech_recognition",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "speech_recognition",
+        "description": "speech_recognition",
+        "detail": "speech_recognition",
+        "documentation": {}
+    },
+    {
+        "label": "pyttsx3",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pyttsx3",
+        "description": "pyttsx3",
+        "detail": "pyttsx3",
+        "documentation": {}
+    },
+    {
+        "label": "speak",
+        "kind": 2,
+        "importPath": "quiz",
+        "description": "quiz",
+        "peekOfCode": "def speak(text):\n    engine.say(text)\n    engine.runAndWait()\n# Function to get user's spoken response\ndef get_response():\n    with sr.Microphone() as source:\n        print(\"Speak your answer...\")\n        audio = recognizer.listen(source)\n    try:\n        response = recognizer.recognize_google(audio).upper()",
+        "detail": "quiz",
+        "documentation": {}
+    },
+    {
+        "label": "get_response",
+        "kind": 2,
+        "importPath": "quiz",
+        "description": "quiz",
+        "peekOfCode": "def get_response():\n    with sr.Microphone() as source:\n        print(\"Speak your answer...\")\n        audio = recognizer.listen(source)\n    try:\n        response = recognizer.recognize_google(audio).upper()\n        print(f\"You said: {response}\")\n        return response\n    except sr.UnknownValueError:\n        speak(\"Sorry, I didn't catch that. Please try again.\")",
+        "detail": "quiz",
+        "documentation": {}
+    },
+    {
+        "label": "run_quiz",
+        "kind": 2,
+        "importPath": "quiz",
+        "description": "quiz",
+        "peekOfCode": "def run_quiz():\n    score = 0\n    for question in questions:\n        speak(question[\"question\"])\n        for option in question[\"options\"]:\n            speak(option)\n        response = get_response()\n        if response == question[\"answer\"]:\n            speak(\"Correct!\")\n            score += 1",
+        "detail": "quiz",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "quiz",
+        "description": "quiz",
+        "peekOfCode": "def main():\n    speak(\"Welcome to the quiz!\")\n    run_quiz()\n    speak(\"Thanks for playing!\")\nif __name__ == \"__main__\":\n    main()",
+        "detail": "quiz",
+        "documentation": {}
+    },
+    {
+        "label": "recognizer",
+        "kind": 5,
+        "importPath": "quiz",
+        "description": "quiz",
+        "peekOfCode": "recognizer = sr.Recognizer()\nengine = pyttsx3.init()\n# Questions and answers\nquestions = [\n    {\"question\": \"What is the chemical symbol for water?\", \"options\": [\"A) H2O\", \"B) CO2\", \"C) NaCl\", \"D) O2\"], \"answer\": \"A\"},\n    {\"question\": \"What is the largest planet in our solar system?\", \"options\": [\"A) Earth\", \"B) Jupiter\", \"C) Saturn\", \"D) Mars\"], \"answer\": \"B\"},\n    {\"question\": \"What is the powerhouse of the cell?\", \"options\": [\"A) Nucleus\", \"B) Mitochondrion\", \"C) Chloroplast\", \"D) Ribosome\"], \"answer\": \"B\"},\n    {\"question\": \"Who wrote the play 'Romeo and Juliet'?\", \"options\": [\"A) William Shakespeare\", \"B) Charles Dickens\", \"C) Jane Austen\", \"D) Mark Twain\"], \"answer\": \"A\"},\n    {\"question\": \"What is the capital of France?\", \"options\": [\"A) London\", \"B) Paris\", \"C) Berlin\", \"D) Rome\"], \"answer\": \"B\"},\n]",
+        "detail": "quiz",
+        "documentation": {}
+    },
+    {
+        "label": "engine",
+        "kind": 5,
+        "importPath": "quiz",
+        "description": "quiz",
+        "peekOfCode": "engine = pyttsx3.init()\n# Questions and answers\nquestions = [\n    {\"question\": \"What is the chemical symbol for water?\", \"options\": [\"A) H2O\", \"B) CO2\", \"C) NaCl\", \"D) O2\"], \"answer\": \"A\"},\n    {\"question\": \"What is the largest planet in our solar system?\", \"options\": [\"A) Earth\", \"B) Jupiter\", \"C) Saturn\", \"D) Mars\"], \"answer\": \"B\"},\n    {\"question\": \"What is the powerhouse of the cell?\", \"options\": [\"A) Nucleus\", \"B) Mitochondrion\", \"C) Chloroplast\", \"D) Ribosome\"], \"answer\": \"B\"},\n    {\"question\": \"Who wrote the play 'Romeo and Juliet'?\", \"options\": [\"A) William Shakespeare\", \"B) Charles Dickens\", \"C) Jane Austen\", \"D) Mark Twain\"], \"answer\": \"A\"},\n    {\"question\": \"What is the capital of France?\", \"options\": [\"A) London\", \"B) Paris\", \"C) Berlin\", \"D) Rome\"], \"answer\": \"B\"},\n]\n# Function to speak text",
+        "detail": "quiz",
+        "documentation": {}
+    },
+    {
+        "label": "questions",
+        "kind": 5,
+        "importPath": "quiz",
+        "description": "quiz",
+        "peekOfCode": "questions = [\n    {\"question\": \"What is the chemical symbol for water?\", \"options\": [\"A) H2O\", \"B) CO2\", \"C) NaCl\", \"D) O2\"], \"answer\": \"A\"},\n    {\"question\": \"What is the largest planet in our solar system?\", \"options\": [\"A) Earth\", \"B) Jupiter\", \"C) Saturn\", \"D) Mars\"], \"answer\": \"B\"},\n    {\"question\": \"What is the powerhouse of the cell?\", \"options\": [\"A) Nucleus\", \"B) Mitochondrion\", \"C) Chloroplast\", \"D) Ribosome\"], \"answer\": \"B\"},\n    {\"question\": \"Who wrote the play 'Romeo and Juliet'?\", \"options\": [\"A) William Shakespeare\", \"B) Charles Dickens\", \"C) Jane Austen\", \"D) Mark Twain\"], \"answer\": \"A\"},\n    {\"question\": \"What is the capital of France?\", \"options\": [\"A) London\", \"B) Paris\", \"C) Berlin\", \"D) Rome\"], \"answer\": \"B\"},\n]\n# Function to speak text\ndef speak(text):\n    engine.say(text)",
+        "detail": "quiz",
+        "documentation": {}
+    }
+]
