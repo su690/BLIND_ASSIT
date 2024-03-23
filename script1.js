@@ -1,5 +1,4 @@
 const questions = [
-  
     {
         question: "Which planet is known as the Red Planet?",
         options: ["A) Venus", "B) Mars", "C) Jupiter", "D) Saturn"],
@@ -45,9 +44,6 @@ const questions = [
         options: ["A) Earth's rotation", "B) Gravitational pull of the Moon", "C) Solar radiation", "D) Underwater earthquakes"],
         answer: "B) Gravitational pull of the Moon"
     }
-
-
-    // Add more questions here
 ];
 
 let currentQuestion = 0;
@@ -56,16 +52,67 @@ const answerInput = document.getElementById('answer-input');
 const resultContainer = document.getElementById('result-container');
 let userResponses = [];
 
+let speakingQuestion = false; // Flag to track if a question is being spoken
+let speakingOption = false; // Flag to track if options are being spoken
+
 function speakQuestion(question) {
+    speakingQuestion = true; // Set flag to true when speaking starts
     const msg = new SpeechSynthesisUtterance(question.question);
+    msg.onend = () => {
+        speakingQuestion = false; // Set flag to false when speaking ends
+        startSpeechRecognition(); // Start speech recognition after question is fully spoken
+    };
+    window.speechSynthesis.speak(msg);
+}
+
+function speakOption(option, index) {
+    speakingOption = true; // Set flag to true when speaking starts
+    const msg = new SpeechSynthesisUtterance(option);
+    msg.onend = () => {
+        speakingOption = false; // Set flag to false when speaking ends
+        if (index === questions[currentQuestion].options.length - 1) {
+            startSpeechRecognition(); // Start speech recognition after all options are spoken
+        }
+    };
     window.speechSynthesis.speak(msg);
 }
 
 function displayQuestion(question) {
     questionContainer.innerHTML = `<h3>${question.question}</h3>`;
-    question.options.forEach(option => {
-        questionContainer.innerHTML += `<div>${option}</div>`;
+    question.options.forEach((option, index) => {
+        const optionDiv = document.createElement('div');
+        optionDiv.textContent = option;
+        optionDiv.addEventListener('click', () => {
+            userResponses[currentQuestion - 1] = optionDiv.textContent.trim().toLowerCase();
+            answerInput.value = optionDiv.textContent.trim();
+            stopSpeechRecognition(); // Stop speech recognition after selecting an option
+        });
+        questionContainer.appendChild(optionDiv);
+        speakOption(option, index); // Speak the option
     });
+}
+
+function startSpeechRecognition() {
+    if (!speakingQuestion && !speakingOption) { // Check if neither question nor options are being spoken
+        recognition = new webkitSpeechRecognition();
+        recognition.continuous = false;
+        recognition.lang = 'en-US';
+
+        recognition.onresult = function (event) {
+            const response = event.results[0][0].transcript;
+            answerInput.value = response;
+            stopSpeechRecognition();
+            userResponses[currentQuestion - 1] = response.trim().toLowerCase();
+        };
+
+        recognition.start();
+    }
+}
+
+function stopSpeechRecognition() {
+    if (recognition) {
+        recognition.stop();
+    }
 }
 
 function nextQuestion() {
@@ -75,7 +122,6 @@ function nextQuestion() {
         displayQuestion(question);
         currentQuestion++;
         answerInput.value = ""; // Clear previous answer
-        startSpeechRecognition();
     } else {
         questionContainer.innerHTML = "<h3>End of the exam</h3>";
         answerInput.style.display = 'none';
@@ -87,27 +133,6 @@ function nextQuestion() {
 answerInput.addEventListener('input', () => {
     userResponses[currentQuestion - 1] = answerInput.value.trim().toLowerCase();
 });
-
-function startSpeechRecognition() {
-    recognition = new webkitSpeechRecognition();
-    recognition.continuous = false;
-    recognition.lang = 'en-US';
-    
-    recognition.onresult = function(event) {
-        const response = event.results[0][0].transcript;
-        answerInput.value = response;
-        stopSpeechRecognition();
-        userResponses[currentQuestion - 1] = response.trim().toLowerCase();
-    };
-    
-    recognition.start();
-}
-
-function stopSpeechRecognition() {
-    if (recognition) {
-        recognition.stop();
-    }
-}
 
 function checkAnswers() {
     let score = 0;
@@ -124,8 +149,6 @@ function checkAnswers() {
             score++;
         }
 
-        resultContainer.innerHTML += `<div>Question ${index + 1}: ${isCorrect ? 'Correct' : 'Incorrect'}. Your Answer: ${userAnswer}. Correct Answer: ${correctAnswer}</div>`;
+        resultContainer.innerHTML += `<div>Question ${index + 1}: ${isCorrect ? '' : ''}. Your Answer: ${userAnswer}. Correct Answer: ${correctAnswer}</div>`;
     });
-
-   
 }
