@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f4;
+            background: linear-gradient(45deg, #FF8C00, #FF6347); /* Gradient background */
             margin: 0;
             padding: 0;
             display: flex;
@@ -18,7 +18,7 @@
         .container {
             max-width: 600px;
             padding: 30px;
-            background-color: #fff;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
             border-radius: 10px;
             box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
             text-align: center;
@@ -37,14 +37,29 @@
             padding: 10px 20px;
             border: none;
             border-radius: 5px;
-            background-color: #007bff;
+            background-color: #007bff; /* Blue button color */
+            background-image: linear-gradient(to bottom, #007bff, #0056b3); /* Button gradient */
             color: #fff;
             font-size: 16px;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+        input {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: calc(100% - 16px);
+        }
+        .username-box, .password-box {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: left;
         }
         @keyframes fadeIn {
             from {
@@ -62,7 +77,7 @@
     <div class="container">
         <h1 id="welcomeMsg">Welcome to Blind Assistant Web Application</h1>
         <p id="userSpeech">Listening...</p>
-        <button id="nextPageBtn">Login</button>
+        <button id="nextPageBtn" style="display: none;">Enter</button>
     </div>
 
     <script>
@@ -70,7 +85,7 @@
 
         function speakWelcome() {
             var msg = new SpeechSynthesisUtterance();
-            msg.text = "Welcome to Blind Assistant Web Application. Please provide your username and password";
+            msg.text = "Welcome to Blind Assistant Web Application. Please say your username.";
             msg.onend = function(event) {
                 welcomeSpoken = true; // Update flag
                 listenUserSpeech(); // Start listening to user's speech
@@ -84,37 +99,39 @@
 
             recognition.onresult = function(event) {
                 var userSpeech = event.results[0][0].transcript;
-                document.getElementById('userSpeech').textContent = userSpeech;
-
-                // Check if the user's speech contains a name
-                var nameRegex = /(?:my name is|I am|I'm) (\w+)/i;
-                var match = userSpeech.match(nameRegex);
-                if (match && match[1]) {
-                    var username = match[1];
-                    document.getElementById('welcomeMsg').textContent = "Welcome, " + username + "!";
-                }
+                document.getElementById('userSpeech').textContent = "You said: " + userSpeech;
+                askForPassword(); // Proceed to ask for password after getting username
             };
 
             recognition.start();
             document.getElementById('userSpeech').textContent = "Listening...";
         }
 
-        function nextPage() {
-            window.location.href = 'page1.html'; // Redirect to the next page
+        function askForPassword() {
+            var msg = new SpeechSynthesisUtterance();
+            msg.text = "Please say your password";
+            window.speechSynthesis.speak(msg);
+            
+            // Add a delay of 2 seconds before showing the Enter button
+            setTimeout(function() {
+                document.getElementById('nextPageBtn').style.display = 'block'; // Show the Enter button
+            }, 6000);
         }
 
         window.onload = function() {
             speakWelcome(); // Speak welcome message
 
-            // Listen for Enter key press on the document
-            document.addEventListener('keydown', function(event) {
-                if (event.key === 'Enter') {
-                    nextPage(); // Call nextPage function on Enter key press
-                }
+            // Handle click event for the button
+            document.getElementById('nextPageBtn').addEventListener('click', function() {
+                window.location.replace('page1.html'); // Redirect to page1.html on button click
             });
 
-            // Handle click event for the button
-            document.getElementById('nextPageBtn').addEventListener('click', nextPage);
+            // Handle keydown event for the "Enter" key
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    document.getElementById('nextPageBtn').click(); // Simulate a click on the Enter button
+                }
+            });
         };
     </script>
 </body>
